@@ -133,14 +133,122 @@ pintos_init (void)
     /* Run actions specified on kernel command line. */
     run_actions (argv);
   } else {
-    // TODO: no command line passed to kernel. Run interactively 
+    // ------------------------------------------------------------------------------------------------
+   while (true){
+
+    
+
+      printf("\nEnter your command : ");
+      char input_str[50] ;
+      int i = 0;
+
+      while (true) {
+        char c  = input_getc();     //getting input charactor 
+
+
+        if (c == 13) {       // when press enter
+          break;
+        }
+
+        if (c== 8 && i >0 ){
+          input_str[i-1]= input_str[i];
+          printf("\b \b");               // when press backspace ,removing before one.
+
+          input_str[i]='\0';
+          i--;
+          continue;
+
+        }
+
+
+        if (c!= 8){
+          
+          input_str[i++] = c ;
+          printf("%c",c);
+        }
+
+      }
+      input_str[i] = '\0';        
+
+      printf("\n\n");
+       
+      // whoami command 
+
+      if (strcmp("whoami",input_str) == 0){
+        printf("\tHello, Neranjan Pushpakumara, Your index is  :  210500V\n");
+        
+      }
+      
+      // shutdown command 
+
+      else if (strcmp("shutdown",input_str)==0){
+        printf("\tConfirm it.[y/n] : ");
+        char c = input_getc();
+        printf("%c\n",c);
+
+        if (c=='y' || c == 'Y'){
+          shutdown_power_off();
+          
+          }
+          else{
+             continue;
+          }
+       }
+      
+      // time
+
+      else if (strcmp("time",input_str)== 0){
+          printf("\tSeconds since UNIX epoch : %lu \n",rtc_get_time());
+          
+      }
+
+      // available RAM amount
+      else if (strcmp("ram",input_str)== 0){
+          printf ("\tAvailable RAM :  %'"PRIu32" kB ..\n",init_ram_pages * PGSIZE / 1024);
+      }
+  
+      // thread statistics
+
+      else if (strcmp("thread",input_str) == 0){
+        printf("\t");
+        thread_print_stats();
+        
+      }
+
+      // thread priority 
+
+      else if (strcmp("priority",input_str)== 0){
+        printf("\tCurrent Thread priority :  %d\n",thread_get_priority());
+        
+        
+      }
+
+      // exit 
+      else if (strcmp("exit",input_str)== 0){
+        printf("\tDone!");
+        break;
+       
+      
+
+      }else {
+        printf("\tInvalid command..!\n");
+      }
+
+  
+    } 
+   
   }
+
+
+   //---------------------------------------------------------------------------------------------
 
   /* Finish up. */
   shutdown ();
   thread_exit ();
 }
 
+
+
 /* Clear the "BSS", a segment that should be initialized to
    zeros.  It isn't actually stored on disk or zeroed by the
    kernel loader, so we have to zero it ourselves.
